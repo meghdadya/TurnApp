@@ -37,7 +37,7 @@ fun TurnAppTheme(
  *  - ClycTheme.dimens.dimen4dp
  *  - ClycTheme.colors.primary
  */
-object ClyTheme {
+object TurnAppTheme {
     val typography: ClyTypography
         @Composable
         get() = LocalClyTypography.current

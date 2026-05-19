@@ -3,7 +3,6 @@ package com.sample.turnapp
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -22,7 +21,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.sample.turnapp.core.ui.theme.ClyTheme
 import com.sample.turnapp.core.ui.theme.TurnAppTheme
 import com.sample.turnapp.feature.home.presentation.HomeScreen
 import kotlinx.serialization.Serializable
@@ -99,7 +97,7 @@ fun BottomBar(
     navController: NavController
 ) {
 
-    val colors = ClyTheme.colors
+    val colors = TurnAppTheme.colors
 
     val items = listOf(
         BottomItem(Home, "خانه", Icons.Default.Home),
