@@ -73,6 +73,8 @@ kotlin {
             //Utils
             implementation(libs.bignum)
             implementation(libs.kotlinx.datetime)
+            //navigation
+            implementation(libs.androidx.navigation.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

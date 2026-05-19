@@ -25,7 +25,7 @@ private val dimen72dp get() = 72.dp
  * This class's implementation is provided through [clycDimens] and
  * held through [LocalClycDimens].
  *
- * @see ClyTheme For accessing dimensions
+ * @see TurnAppTheme For accessing dimensions
  */
 @Immutable
 data class ClycDimens(
@@ -63,7 +63,7 @@ data class ClycDimens(
 
 /**
  * Holder of [ClycDimens] which is provided using [clycDimens] through
- * app's theme: [ClyTheme]
+ * app's theme: [TurnAppTheme]
  */
 internal val LocalClycDimens = staticCompositionLocalOf { ClycDimens() }
 

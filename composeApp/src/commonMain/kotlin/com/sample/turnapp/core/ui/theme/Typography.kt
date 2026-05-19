@@ -63,7 +63,7 @@ data class ClyTextStyle(
  * This class's implementation is provided through [clyTypography] and
  * held through [LocalClyTypography].
  *
- * @see ClyTheme For accessing typographies
+ * @see TurnAppTheme For accessing typographies
  */
 @Immutable
 data class ClyTypography(
@@ -92,7 +92,7 @@ private val defaultClyTextStyle: ClyTextStyle
 
 /**
  * Holder of [ClyTypography] which is provided using [clyTypography] through
- * app's theme: [ClyTheme]
+ * app's theme: [TurnAppTheme]
  */
 internal val LocalClyTypography = staticCompositionLocalOf { ClyTypography() }
 
