@@ -5,7 +5,7 @@ import com.sample.turnapp.core.domain.model.DomainModel
 import com.sample.turnapp.core.domain.model.Resource
 import com.sample.turnapp.core.domain.model.error.GeneralError
 import com.sample.turnapp.core.domain.model.map
-import com.sample.turnapp.feature.people.domain.AppointmentsRepository
+import com.sample.turnapp.feature.appointment.domain.AppointmentsRepository
 
 class RestoreAppointmentsUseCase(
     private val repository: AppointmentsRepository

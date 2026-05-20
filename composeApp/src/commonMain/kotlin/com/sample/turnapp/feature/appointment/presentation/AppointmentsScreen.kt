@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.sample.turnapp.core.ui.theme.TurnAppTheme
 import com.sample.turnapp.feature.appointment.domain.AppointmentUiModel
 import com.sample.turnapp.feature.appointment.domain.AppointmentsFilter
+import com.sample.turnapp.feature.appointment.presentation.components.AppointmentBottomSheet
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -169,125 +170,32 @@ fun AppointmentsScreen(
     // =========================================================
     // ADD / EDIT BOTTOM SHEET
     // =========================================================
+
     if (showAppointmentBottomSheet) {
 
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        AppointmentBottomSheet(
+            appointment = selectedAppointment,
+            onDismiss = {
+                showAppointmentBottomSheet = false
+                selectedAppointment = null
+            },
+            onSave = { id, personId, startTime, endTime, title, description ->
 
-        var title by remember { mutableStateOf(selectedAppointment?.title ?: "") }
-        var description by remember { mutableStateOf(selectedAppointment?.description ?: "") }
-        var personId by remember { mutableStateOf(selectedAppointment?.personId?.toString() ?: "") }
-        var startTime by remember { mutableStateOf(selectedAppointment?.startTime ?: "") }
-        var endTime by remember { mutableStateOf(selectedAppointment?.endTime ?: "") }
-
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-
-            ModalBottomSheet(
-                onDismissRequest = {
-                    showAppointmentBottomSheet = false
-                    selectedAppointment = null
-                },
-                sheetState = sheetState,
-                containerColor = TurnAppTheme.colors.backgroundPrimary,
-                dragHandle = null
-            ) {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .navigationBarsPadding()
-                ) {
-
-                    Text(
-                        text = if (selectedAppointment == null) "افزودن قرار" else "ویرایش قرار",
-                        style = TurnAppTheme.typography.title.medium
+                viewModel.setEvent(
+                    AppointmentsContract.AppointmentsUiEvent.OnSaveAppointment(
+                        id = id,
+                        personId = personId,
+                        startTime = startTime,
+                        endTime = endTime,
+                        title = title,
+                        description = description
                     )
+                )
 
-                    Spacer(Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = title,
-                        onValueChange = { title = it },
-                        label = { Text("عنوان") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = description,
-                        onValueChange = { description = it },
-                        label = { Text("توضیحات") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = personId,
-                        onValueChange = { personId = it },
-                        label = { Text("شناسه شخص") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = startTime,
-                        onValueChange = { startTime = it },
-                        label = { Text("شروع") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = endTime,
-                        onValueChange = { endTime = it },
-                        label = { Text("پایان") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-
-                        Button(
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                viewModel.setEvent(
-                                    AppointmentsContract.AppointmentsUiEvent.OnSaveAppointment(
-                                        id = selectedAppointment?.id,
-                                        personId = personId.toIntOrNull() ?: 0,
-                                        startTime = startTime.toDoubleOrNull() ?: 0.0,
-                                        endTime = endTime.toDoubleOrNull() ?: 0.0,
-                                        title = title,
-                                        description = description
-                                    )
-                                )
-                                showAppointmentBottomSheet = false
-                                selectedAppointment = null
-                            }
-                        ) {
-                            Text("ذخیره")
-                        }
-
-                        OutlinedButton(
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                showAppointmentBottomSheet = false
-                                selectedAppointment = null
-                            }
-                        ) {
-                            Text("لغو")
-                        }
-                    }
-                }
+                showAppointmentBottomSheet = false
+                selectedAppointment = null
             }
-        }
+        )
     }
 
     // =========================================================

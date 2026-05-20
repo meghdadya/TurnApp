@@ -17,7 +17,7 @@ import com.sample.turnapp.feature.appointment.domain.usecase.GetAppointmentsUseC
 import com.sample.turnapp.feature.appointment.domain.usecase.RestoreAppointmentsUseCase
 import com.sample.turnapp.feature.appointment.domain.usecase.SaveAppointmentUseCase
 import com.sample.turnapp.feature.appointment.presentation.AppointmentsViewModel
-import com.sample.turnapp.feature.people.domain.AppointmentsRepository
+import com.sample.turnapp.feature.appointment.domain.AppointmentsRepository
 import com.sample.turnapp.feature.people.domain.PeopleRepository
 import com.sample.turnapp.feature.people.domain.usecase.DeletePeopleUseCase
 import com.sample.turnapp.feature.people.domain.usecase.GetPeopleListUseCase

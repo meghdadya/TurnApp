@@ -7,7 +7,7 @@ import com.sample.turnapp.core.domain.model.error.GeneralError
 import com.sample.turnapp.core.domain.model.map
 import com.sample.turnapp.feature.appointment.domain.AppointmentUiModel
 import com.sample.turnapp.feature.appointment.domain.GetAppointmentsParam
-import com.sample.turnapp.feature.people.domain.AppointmentsRepository
+import com.sample.turnapp.feature.appointment.domain.AppointmentsRepository
 
 class GetAppointmentsUseCase(
     private val repository: AppointmentsRepository

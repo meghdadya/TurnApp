@@ -14,7 +14,7 @@ import com.sample.turnapp.feature.appointment.domain.AppointmentUiModel
 import com.sample.turnapp.feature.appointment.domain.AppointmentsFilter
 import com.sample.turnapp.feature.appointment.domain.GetAppointmentsParam
 import com.sample.turnapp.feature.appointment.domain.SaveAppointmentParam
-import com.sample.turnapp.feature.people.domain.AppointmentsRepository
+import com.sample.turnapp.feature.appointment.domain.AppointmentsRepository
 import kotlinx.coroutines.withContext
 
 class AppointmentsRepositoryImpl(

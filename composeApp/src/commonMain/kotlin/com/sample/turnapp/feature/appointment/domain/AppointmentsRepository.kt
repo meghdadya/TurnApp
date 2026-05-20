@@ -1,10 +1,7 @@
-package com.sample.turnapp.feature.people.domain
+package com.sample.turnapp.feature.appointment.domain
 
 import com.sample.turnapp.core.domain.model.Resource
 import com.sample.turnapp.core.domain.model.error.GeneralError
-import com.sample.turnapp.feature.appointment.domain.AppointmentUiModel
-import com.sample.turnapp.feature.appointment.domain.GetAppointmentsParam
-import com.sample.turnapp.feature.appointment.domain.SaveAppointmentParam
 
 interface AppointmentsRepository {
 
