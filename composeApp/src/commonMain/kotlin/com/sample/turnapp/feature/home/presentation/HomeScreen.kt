@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +35,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel() ,
+    viewModel: HomeViewModel = koinViewModel(),
     onNavigateToPeople: () -> Unit = {},
     onNavigateToAppointments: () -> Unit = {}
 ) {
@@ -62,165 +64,208 @@ fun HomeScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(TurnAppTheme.dimens.paddingMedium)
-            .padding(dimens.paddingSemiSmall)
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
 
-        // -------------------- HEADER --------------------
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(dimens.buttonRadiusLarge))
-                .background(colors.backgroundBlueContainer)
-                .padding(vertical = dimens.paddingLarge),
-            contentAlignment = Alignment.Center
-        ) {
+        // -------------------- MAIN CONTENT --------------------
+        if (!state.isLoading && !state.hasError) {
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(TurnAppTheme.dimens.paddingMedium)
+                    .padding(dimens.paddingSemiSmall)
+            ) {
 
-                Text(
-                    text = "سامانه نوبت‌دهی",
-                    style = typography.title.bold,
-                    color = colors.textPrimary
-                )
+                // -------------------- HEADER --------------------
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(dimens.buttonRadiusLarge))
+                        .background(colors.backgroundBlueContainer)
+                        .padding(vertical = dimens.paddingLarge),
+                    contentAlignment = Alignment.Center
+                ) {
 
-                Spacer(modifier = Modifier.height(dimens.paddingXSmall))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                Text(
-                    text = "خوش آمدید",
-                    style = typography.body1.medium,
-                    color = colors.textSecondary
-                )
+                        Text(
+                            text = "سامانه نوبت‌دهی",
+                            style = typography.title.bold,
+                            color = colors.textPrimary
+                        )
+
+                        Spacer(modifier = Modifier.height(dimens.paddingXSmall))
+
+                        Text(
+                            text = "خوش آمدید",
+                            style = typography.body1.medium,
+                            color = colors.textSecondary
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(dimens.paddingMedium))
+
+                // -------------------- MANAGEMENT CARD --------------------
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(dimens.insideFrameRadius))
+                        .background(colors.backgroundElevatedItems)
+                        .padding(dimens.paddingMedium),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Box(
+                        modifier = Modifier
+                            .size(dimens.iconWidthLarge)
+                            .clip(RoundedCornerShape(dimens.buttonRadiusMedium))
+                            .background(colors.backgroundButtonPrimary),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = colors.textColoredButton,
+                            modifier = Modifier.size(dimens.iconWidthMedium)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(dimens.paddingSemiSmall))
+
+                    Column {
+
+                        Text(
+                            text = "مدیریت افراد و نوبت‌ها",
+                            style = typography.title.medium,
+                            color = colors.textPrimary
+                        )
+
+                        Spacer(modifier = Modifier.height(dimens.paddingXSmall))
+
+                        Text(
+                            text = "سیستم نوبت‌دهی هوشمند",
+                            style = typography.subtitle.medium,
+                            color = colors.textSecondary
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(dimens.paddingMedium))
+
+                // -------------------- DASHBOARD CARDS --------------------
+                Row(horizontalArrangement = Arrangement.spacedBy(dimens.paddingSemiSmall)) {
+
+                    DashboardCard(
+                        modifier = Modifier.weight(1f),
+                        title = "لیست نوبت‌ها",
+                        subtitle = "${state.appointments} نوبت",
+                        icon = Icons.Default.Star,
+                        iconBackground = colors.backgroundYellowContainer,
+                        iconTint = colors.textYellow,
+                        onClick = {
+                            viewModel.setEvent(HomeContract.HomeUiEvent.OnAppointmentsClick)
+                        }
+                    )
+
+                    DashboardCard(
+                        modifier = Modifier.weight(1f),
+                        title = "لیست افراد",
+                        subtitle = "${state.peopleCount} نفر",
+                        icon = Icons.Default.Star,
+                        iconBackground = colors.backgroundBlueContainer,
+                        iconTint = colors.textBlue,
+                        onClick = {
+                            viewModel.setEvent(HomeContract.HomeUiEvent.OnPeopleClick)
+                        }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(dimens.paddingMedium))
+
+                // -------------------- STATS --------------------
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(dimens.insideFrameRadius))
+                        .background(colors.backgroundElevatedItems)
+                        .padding(dimens.paddingMedium)
+                ) {
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = colors.textPrimary
+                        )
+
+                        Spacer(modifier = Modifier.width(dimens.paddingSmall))
+
+                        Text(
+                            text = "آمار سریع",
+                            style = typography.subtitle.medium,
+                            color = colors.textPrimary
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(dimens.paddingSemiLarge))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+
+                        StatItem(
+                            number = state.deletedCount.toString(),
+                            title = "افراد حذف شده",
+                            color = colors.primaryAction
+                        )
+
+                        StatItem(
+                            number = state.activePeopleCount.toString(),
+                            title = "افراد فعال",
+                            color = colors.active
+                        )
+                    }
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(dimens.paddingMedium))
-
-        // -------------------- MANAGEMENT CARD --------------------
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(dimens.insideFrameRadius))
-                .background(colors.backgroundElevatedItems)
-                .padding(dimens.paddingMedium),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
+        // -------------------- LOADING --------------------
+        if (state.isLoading) {
             Box(
-                modifier = Modifier
-                    .size(dimens.iconWidthLarge)
-                    .clip(RoundedCornerShape(dimens.buttonRadiusMedium))
-                    .background(colors.backgroundButtonPrimary),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = null,
-                    tint = colors.textColoredButton,
-                    modifier = Modifier.size(dimens.iconWidthMedium)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(dimens.paddingSemiSmall))
-
-            Column {
-
-                Text(
-                    text = "مدیریت افراد و نوبت‌ها",
-                    style = typography.title.medium,
-                    color = colors.textPrimary
-                )
-
-                Spacer(modifier = Modifier.height(dimens.paddingXSmall))
-
-                Text(
-                    text = "سیستم نوبت‌دهی هوشمند",
-                    style = typography.subtitle.medium,
-                    color = colors.textSecondary
-                )
+                CircularProgressIndicator()
             }
         }
 
-        Spacer(modifier = Modifier.height(dimens.paddingMedium))
-
-        // -------------------- DASHBOARD CARDS --------------------
-        Row(horizontalArrangement = Arrangement.spacedBy(dimens.paddingSemiSmall)) {
-
-            DashboardCard(
-                modifier = Modifier.weight(1f),
-                title = "لیست نوبت‌ها",
-                subtitle = "${state.appointments} نوبت",
-                icon = Icons.Default.Star,
-                iconBackground = colors.backgroundYellowContainer,
-                iconTint = colors.textYellow,
-                onClick = {
-                    viewModel.setEvent(HomeContract.HomeUiEvent.OnAppointmentsClick)
-                }
-            )
-
-            DashboardCard(
-                modifier = Modifier.weight(1f),
-                title = "لیست افراد",
-                subtitle = "${state.peopleCount} نفر",
-                icon = Icons.Default.Star,
-                iconBackground = colors.backgroundBlueContainer,
-                iconTint = colors.textBlue,
-                onClick = {
-                    viewModel.setEvent(HomeContract.HomeUiEvent.OnPeopleClick)
-                }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(dimens.paddingMedium))
-
-        // -------------------- STATS --------------------
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(dimens.insideFrameRadius))
-                .background(colors.backgroundElevatedItems)
-                .padding(dimens.paddingMedium)
-        ) {
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = null,
-                    tint = colors.textPrimary
-                )
-
-                Spacer(modifier = Modifier.width(dimens.paddingSmall))
-
-                Text(
-                    text = "آمار سریع",
-                    style = typography.subtitle.medium,
-                    color = colors.textPrimary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(dimens.paddingSemiLarge))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
+        // -------------------- ERROR + RETRY --------------------
+        if (state.hasError) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                StatItem(
-                    number = state.deletedCount.toString(),
-                    title = "افراد حذف شده",
-                    color = colors.primaryAction
+                Text(
+                    text = "خطا در دریافت اطلاعات",
+                    style = typography.subtitle.medium,
+                    color = colors.textPrimary
                 )
 
-                StatItem(
-                    number = state.activePeopleCount.toString(),
-                    title = "افراد فعال",
-                    color = colors.active
-                )
+                Spacer(modifier = Modifier.height(dimens.paddingMedium))
+
+                Button(
+                    onClick = {
+                        viewModel.setEvent(HomeContract.HomeUiEvent.OnRetry)
+                    }
+                ) {
+                    Text("تلاش مجدد")
+                }
             }
         }
     }
