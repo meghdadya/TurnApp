@@ -58,7 +58,7 @@ fun PeopleBottomSheet(
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
-                placeholder = { Text("Search name or national ID") },
+                placeholder = { Text("جستجو در نام یا کد ملی") },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -107,7 +107,7 @@ fun PersonRow(
         )
 
         Text(
-            text = "National ID: ${person.nationalCode}",
+            text = "کد ملی: ${person.nationalCode}",
             style = MaterialTheme.typography.bodySmall
         )
     }

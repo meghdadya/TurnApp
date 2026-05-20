@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
@@ -21,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -140,85 +142,143 @@ fun AppointmentBottomSheet(
                     value = title,
                     onValueChange = { title = it },
                     label = { Text("عنوان") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true
                 )
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(16.dp))
 
                 // DESCRIPTION
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text("توضیحات") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    minLines = 3,
+                    maxLines = 5
                 )
 
                 Spacer(Modifier.height(12.dp))
 
-                // ✅ PERSON SELECTOR (NEW)
-                OutlinedTextField(
-                    value = selectedPerson?.let {
-                        "${it.firstName} ${it.lastName} - ${it.nationalCode}"
-                    } ?: "",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("شخص") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { showPeopleSheet = true },
-                    trailingIcon = {
-                        IconButton(onClick = { showPeopleSheet = true }) {
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                // ✅ PERSON SELECTOR
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    OutlinedCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showPeopleSheet = true },
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 18.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            Text(
+                                text = selectedPerson?.let {
+                                    "${it.firstName} ${it.lastName} - ${it.nationalCode}"
+                                } ?: "انتخاب شخص",
+                                modifier = Modifier.weight(1f),
+                                color = if (selectedPerson == null)
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                else
+                                    MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = null
+                            )
                         }
                     }
-                )
+                }
 
                 Spacer(Modifier.height(12.dp))
 
                 // START DATE
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { showStartDialog = true }
-                        .padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text("شروع", style = MaterialTheme.typography.labelMedium)
-                        Text(
-                            text = startDateState.selectedDate?.toDateString() ?: "",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
 
-                    IconButton(onClick = { showStartDialog = true }) {
-                        Icon(Icons.Default.DateRange, null)
+
+                    OutlinedCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showStartDialog = true },
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 18.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            Text(
+                                text = startDateState.selectedDate?.toDateString()
+                                    ?: "انتخاب تاریخ شروع",
+                                modifier = Modifier.weight(1f),
+                                color = if (startDateState.selectedDate == null)
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                else
+                                    MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(16.dp))
 
-                // END DATE
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { showEndDialog = true }
-                        .padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+// END DATE
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text("پایان", style = MaterialTheme.typography.labelMedium)
-                        Text(
-                            text = endDateState.selectedDate?.toDateString() ?: "",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
 
-                    IconButton(onClick = { showEndDialog = true }) {
-                        Icon(Icons.Default.DateRange, null)
+
+                    OutlinedCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showEndDialog = true },
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 18.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            Text(
+                                text = endDateState.selectedDate?.toDateString()
+                                    ?: "انتخاب تاریخ پایان",
+                                modifier = Modifier.weight(1f),
+                                color = if (endDateState.selectedDate == null)
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                else
+                                    MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
-
                 Spacer(Modifier.height(16.dp))
 
                 // SAVE / CANCEL
