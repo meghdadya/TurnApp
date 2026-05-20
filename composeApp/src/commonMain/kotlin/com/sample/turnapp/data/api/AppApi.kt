@@ -3,6 +3,10 @@ package com.sample.turnapp.data.api
 import com.sample.turnapp.core.data.base.BaseServerResponse
 import com.sample.turnapp.core.data.base.ErrorResponse
 import com.sample.turnapp.core.data.network.NetworkResponse
+import com.sample.turnapp.data.model.appointments.AppointmentList
+import com.sample.turnapp.data.model.appointments.AppointmentSaveRequest
+import com.sample.turnapp.data.model.appointments.AppointmentsFilterRequest
+import com.sample.turnapp.data.model.appointments.DeleteAppointmentRequest
 import com.sample.turnapp.data.model.people.DeletePatientRequest
 import com.sample.turnapp.data.model.people.PatientFilterRequest
 import com.sample.turnapp.data.model.people.PatientList
@@ -34,6 +38,30 @@ interface AppApi {
 
     @POST("People/Restore")
     suspend fun restorePeople(
+        @Query("Id") id: Int
+    ): NetworkResponse<BaseServerResponse<Int>, ErrorResponse>
+
+    //Appointments
+
+    @POST("Appointments/GetList")
+    suspend fun getAppointmentsList(
+        @Body request: AppointmentsFilterRequest
+    ): NetworkResponse<BaseServerResponse<AppointmentList>, ErrorResponse>
+
+
+    @POST("Appointments/Save")
+    suspend fun saveAppointment(
+        @Body request: AppointmentSaveRequest
+    ): NetworkResponse<BaseServerResponse<Int>, ErrorResponse>
+
+
+    @POST("Appointments/Delete")
+    suspend fun deleteAppointments(
+        @Body request: DeleteAppointmentRequest
+    ): NetworkResponse<BaseServerResponse<Int>, ErrorResponse>
+
+    @POST("Appointments/Restore")
+    suspend fun restoreAppointments(
         @Query("Id") id: Int
     ): NetworkResponse<BaseServerResponse<Int>, ErrorResponse>
 

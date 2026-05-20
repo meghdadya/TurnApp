@@ -4,10 +4,10 @@ import com.sample.turnapp.core.core.utils.DispatcherProvider
 import com.sample.turnapp.core.domain.model.Resource
 import com.sample.turnapp.core.domain.model.error.GeneralError
 import com.sample.turnapp.core.domain.model.map
+import com.sample.turnapp.data.model.RemovedState
 import com.sample.turnapp.data.model.people.DeletePatientRequest
 import com.sample.turnapp.data.model.people.Patient
 import com.sample.turnapp.data.model.people.PatientFilterRequest
-import com.sample.turnapp.data.model.people.RemovedState
 import com.sample.turnapp.data.model.people.SavePatientRequest
 import com.sample.turnapp.data.source.PeopleDataSource
 import com.sample.turnapp.feature.people.domain.PeopleRepository

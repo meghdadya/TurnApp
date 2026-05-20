@@ -77,6 +77,11 @@ kotlin {
             //navigation
             implementation(libs.androidx.navigation.compose)
 
+            implementation(libs.material.icons.extended)
+            //calender
+            implementation(libs.persiandatetime)
+            implementation(libs.persian.date.picker)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
