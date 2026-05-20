@@ -175,6 +175,7 @@ fun AppointmentsScreen(
 
         AppointmentBottomSheet(
             appointment = selectedAppointment,
+            people = state.people,
             onDismiss = {
                 showAppointmentBottomSheet = false
                 selectedAppointment = null

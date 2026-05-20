@@ -3,6 +3,7 @@ package com.sample.turnapp.feature.appointment.presentation
 import com.sample.turnapp.core.ui.base.BaseContract
 import com.sample.turnapp.feature.appointment.domain.AppointmentUiModel
 import com.sample.turnapp.feature.appointment.domain.AppointmentsFilter
+import com.sample.turnapp.feature.people.domain.model.PersonUiModel
 
 interface AppointmentsContract {
 
@@ -43,7 +44,8 @@ interface AppointmentsContract {
         val appointments: List<AppointmentUiModel> = emptyList(),
         val filteredAppointments: List<AppointmentUiModel> = emptyList(),
 
-        val deletingAppointmentId: Int? = null
+        val deletingAppointmentId: Int? = null,
+        val people: List<PersonUiModel> = emptyList(),
     ) : BaseContract.UiState
 
     // -------------------- UI EFFECTS --------------------

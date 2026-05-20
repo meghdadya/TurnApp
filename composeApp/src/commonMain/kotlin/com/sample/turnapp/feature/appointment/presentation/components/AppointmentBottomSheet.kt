@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +27,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.sample.turnapp.core.ui.theme.TurnAppTheme
 import com.sample.turnapp.feature.appointment.domain.AppointmentUiModel
+import com.sample.turnapp.feature.people.domain.model.PersonUiModel
 import io.github.faridsolgi.date_picker.view.PersianDatePicker
 import io.github.faridsolgi.date_picker.view.rememberPersianDatePickerState
 import io.github.faridsolgi.persiandatetime.extensions.toDateString
@@ -48,6 +51,7 @@ import io.github.faridsolgi.share.PersianDatePickerDialog
 @Composable
 fun AppointmentBottomSheet(
     appointment: AppointmentUiModel?,
+    people: List<PersonUiModel>, // 👈 ADD THIS
     onDismiss: () -> Unit,
     onSave: (
         id: Int?,
@@ -71,35 +75,36 @@ fun AppointmentBottomSheet(
         mutableStateOf(appointment?.description ?: "")
     }
 
-    var personId by remember(appointment) {
-        mutableStateOf(appointment?.personId?.toString() ?: "")
+    // ✅ REPLACED: personId string -> selectedPerson object
+    var selectedPerson by remember(appointment) {
+        mutableStateOf<PersonUiModel?>(
+            null
+        )
+    }
+
+    // optional: preselect when editing
+    LaunchedEffect(appointment, people) {
+        selectedPerson = people.firstOrNull { it.id == appointment?.personId }
     }
 
     // UNIX TIME
     var startTime by remember {
-        mutableStateOf(
-            appointment?.startTime ?: 0.0
-        )
+        mutableStateOf(appointment?.startTime ?: 0.0)
     }
 
     var endTime by remember {
-        mutableStateOf(
-            appointment?.endTime ?: 0.0
-        )
+        mutableStateOf(appointment?.endTime ?: 0.0)
     }
 
     // DIALOG STATE
-    var showStartDialog by remember {
-        mutableStateOf(false)
-    }
+    var showStartDialog by remember { mutableStateOf(false) }
+    var showEndDialog by remember { mutableStateOf(false) }
 
-    var showEndDialog by remember {
-        mutableStateOf(false)
-    }
+    // PEOPLE SHEET
+    var showPeopleSheet by remember { mutableStateOf(false) }
 
     // PICKER STATE
     val startDateState = rememberPersianDatePickerState()
-
     val endDateState = rememberPersianDatePickerState()
 
     CompositionLocalProvider(
@@ -130,41 +135,42 @@ fun AppointmentBottomSheet(
 
                 Spacer(Modifier.height(12.dp))
 
+                // TITLE
                 OutlinedTextField(
                     value = title,
-                    onValueChange = {
-                        title = it
-                    },
-                    label = {
-                        Text("عنوان")
-                    },
+                    onValueChange = { title = it },
+                    label = { Text("عنوان") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(Modifier.height(12.dp))
 
+                // DESCRIPTION
                 OutlinedTextField(
                     value = description,
-                    onValueChange = {
-                        description = it
-                    },
-                    label = {
-                        Text("توضیحات")
-                    },
+                    onValueChange = { description = it },
+                    label = { Text("توضیحات") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(Modifier.height(12.dp))
 
+                // ✅ PERSON SELECTOR (NEW)
                 OutlinedTextField(
-                    value = personId,
-                    onValueChange = {
-                        personId = it
-                    },
-                    label = {
-                        Text("شناسه شخص")
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                    value = selectedPerson?.let {
+                        "${it.firstName} ${it.lastName} - ${it.nationalCode}"
+                    } ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("شخص") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showPeopleSheet = true },
+                    trailingIcon = {
+                        IconButton(onClick = { showPeopleSheet = true }) {
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                        }
+                    }
                 )
 
                 Spacer(Modifier.height(12.dp))
@@ -178,7 +184,7 @@ fun AppointmentBottomSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = "شروع", style = MaterialTheme.typography.labelMedium)
+                        Text("شروع", style = MaterialTheme.typography.labelMedium)
                         Text(
                             text = startDateState.selectedDate?.toDateString() ?: "",
                             style = MaterialTheme.typography.bodyLarge
@@ -186,16 +192,13 @@ fun AppointmentBottomSheet(
                     }
 
                     IconButton(onClick = { showStartDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.DateRange,
-                            contentDescription = null
-                        )
+                        Icon(Icons.Default.DateRange, null)
                     }
                 }
 
                 Spacer(Modifier.height(12.dp))
 
-// END DATE
+                // END DATE
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -204,7 +207,7 @@ fun AppointmentBottomSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = "پایان", style = MaterialTheme.typography.labelMedium)
+                        Text("پایان", style = MaterialTheme.typography.labelMedium)
                         Text(
                             text = endDateState.selectedDate?.toDateString() ?: "",
                             style = MaterialTheme.typography.bodyLarge
@@ -212,15 +215,13 @@ fun AppointmentBottomSheet(
                     }
 
                     IconButton(onClick = { showEndDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.DateRange,
-                            contentDescription = null
-                        )
+                        Icon(Icons.Default.DateRange, null)
                     }
                 }
 
                 Spacer(Modifier.height(16.dp))
 
+                // SAVE / CANCEL
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -228,25 +229,31 @@ fun AppointmentBottomSheet(
 
                     Button(
                         modifier = Modifier.weight(1f),
+                        enabled = selectedPerson != null,
                         onClick = {
-                            val startTime: Long =
-                                startDateState.selectedDate?.toEpochMilliseconds()?.div(1000) ?: 0L
 
-                            val endTime: Long =
-                                endDateState.selectedDate?.toEpochMilliseconds()?.div(1000) ?: 0L
+                            val startTimeUnix =
+                                startDateState.selectedDate
+                                    ?.toEpochMilliseconds()
+                                    ?.div(1000)
+                                    ?: 0L
+
+                            val endTimeUnix =
+                                endDateState.selectedDate
+                                    ?.toEpochMilliseconds()
+                                    ?.div(1000)
+                                    ?: 0L
 
                             onSave(
                                 appointment?.id,
-                                personId.toIntOrNull() ?: 0,
-                                startTime,
-                                endTime,
+                                selectedPerson?.id ?: 0, // ✅ FIXED
+                                startTimeUnix,
+                                endTimeUnix,
                                 title,
                                 description
                             )
-
                         }
                     ) {
-
                         Text("ذخیره")
                     }
 
@@ -254,25 +261,19 @@ fun AppointmentBottomSheet(
                         modifier = Modifier.weight(1f),
                         onClick = onDismiss
                     ) {
-
                         Text("لغو")
                     }
                 }
             }
         }
 
-        // START DATE PICKER
+        // ================= START PICKER =================
         if (showStartDialog) {
-
             PersianDatePickerDialog(
-                onDismissRequest = {
-                    showStartDialog = false
-                },
+                onDismissRequest = { showStartDialog = false },
                 confirmButton = {
-
                     TextButton(
                         onClick = {
-
                             startTime =
                                 startDateState.selectedDate
                                     ?.toEpochMilliseconds()
@@ -281,31 +282,20 @@ fun AppointmentBottomSheet(
 
                             showStartDialog = false
                         }
-                    ) {
-
-                        Text("تایید")
-                    }
+                    ) { Text("تایید") }
                 }
             ) {
-
-                PersianDatePicker(
-                    state = startDateState
-                )
+                PersianDatePicker(state = startDateState)
             }
         }
 
-        // END DATE PICKER
+        // ================= END PICKER =================
         if (showEndDialog) {
-
             PersianDatePickerDialog(
-                onDismissRequest = {
-                    showEndDialog = false
-                },
+                onDismissRequest = { showEndDialog = false },
                 confirmButton = {
-
                     TextButton(
                         onClick = {
-
                             endTime =
                                 endDateState.selectedDate
                                     ?.toEpochMilliseconds()
@@ -314,17 +304,25 @@ fun AppointmentBottomSheet(
 
                             showEndDialog = false
                         }
-                    ) {
-
-                        Text("تایید")
-                    }
+                    ) { Text("تایید") }
                 }
             ) {
-
-                PersianDatePicker(
-                    state = endDateState
-                )
+                PersianDatePicker(state = endDateState)
             }
+        }
+
+        // ================= PEOPLE BOTTOM SHEET =================
+        if (showPeopleSheet) {
+            PeopleBottomSheet(
+                people = people,
+                onDismiss = { showPeopleSheet = false },
+                onPersonSelected = { result ->
+
+                    selectedPerson = people.firstOrNull { it.id == result.id }
+
+                    showPeopleSheet = false
+                }
+            )
         }
     }
 }

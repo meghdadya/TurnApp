@@ -72,6 +72,6 @@ val viewmodelModule = module {
         PeopleViewModel(get(),get(),get(),get(),get())
     }
     viewModel{
-        AppointmentsViewModel(get(),get(),get(),get(),get())
+        AppointmentsViewModel(get(),get(),get(),get(),get(),get())
     }
 }

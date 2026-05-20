@@ -13,12 +13,17 @@ import com.sample.turnapp.feature.appointment.domain.usecase.DeleteAppointmentsU
 import com.sample.turnapp.feature.appointment.domain.usecase.GetAppointmentsUseCase
 import com.sample.turnapp.feature.appointment.domain.usecase.RestoreAppointmentsUseCase
 import com.sample.turnapp.feature.appointment.domain.usecase.SaveAppointmentUseCase
+import com.sample.turnapp.feature.people.domain.model.GetPeopleParam
+import com.sample.turnapp.feature.people.domain.usecase.GetPeopleListUseCase
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class AppointmentsViewModel(
+    private val getPeople: GetPeopleListUseCase,
     private val getAppointments: GetAppointmentsUseCase,
     private val deleteAppointments: DeleteAppointmentsUseCase,
     private val restoreAppointments: RestoreAppointmentsUseCase,
@@ -51,34 +56,55 @@ class AppointmentsViewModel(
             )
         }
 
-        when (val result = getAppointments(GetAppointmentsParam())) {
+        coroutineScope {
 
-            is Resource.Failure -> {
-                setState {
-                    copy(
-                        isInitialLoading = false,
-                        isLoading = false,
-                        hasError = true
-                    )
-                }
+            val appointmentsDeferred = async {
+                getAppointments(GetAppointmentsParam())
             }
 
-            is Resource.Success -> {
+            val peopleDeferred = async {
+                getPeople(GetPeopleParam())
+            }
 
-                val appointments = result.data.item
+            val appointmentsResult = appointmentsDeferred.await()
+            val peopleResult = peopleDeferred.await()
 
-                setState {
-                    copy(
-                        isInitialLoading = false,
-                        isLoading = false,
-                        hasError = false,
-                        appointments = appointments,
-                        filteredAppointments = applyFilters(
-                            appointments,
-                            searchQuery,
-                            selectedFilter
+            val people = when (peopleResult) {
+                is Resource.Success -> peopleResult.data.item
+                is Resource.Failure -> emptyList()
+            }
+
+            when (appointmentsResult) {
+
+                is Resource.Failure -> {
+                    setState {
+                        copy(
+                            isInitialLoading = false,
+                            isLoading = false,
+                            hasError = true,
+                            people = people
                         )
-                    )
+                    }
+                }
+
+                is Resource.Success -> {
+
+                    val appointments = appointmentsResult.data.item
+
+                    setState {
+                        copy(
+                            isInitialLoading = false,
+                            isLoading = false,
+                            hasError = false,
+                            appointments = appointments,
+                            people = people,
+                            filteredAppointments = applyFilters(
+                                appointments,
+                                searchQuery,
+                                selectedFilter
+                            )
+                        )
+                    }
                 }
             }
         }
