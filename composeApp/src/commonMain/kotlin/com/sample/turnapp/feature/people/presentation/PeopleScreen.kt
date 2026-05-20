@@ -474,7 +474,7 @@ private fun TopSection(
                     horizontal = TurnAppTheme.dimens.paddingMedium,
                     vertical = TurnAppTheme.dimens.paddingSmall
                 ),
-                color = TurnAppTheme.colors.black,
+                color = TurnAppTheme.colors.white,
                 style = TurnAppTheme.typography.body1.medium,
                 fontWeight = FontWeight.Bold
             )
@@ -495,26 +495,15 @@ private fun HeaderSection() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                color = TurnAppTheme.colors.active
-            )
-            .padding(
-                horizontal = TurnAppTheme.dimens.paddingSemiLarge,
-                vertical = TurnAppTheme.dimens.paddingSemiLarge
-            )
+            .background(TurnAppTheme.colors.active)
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
 
         Column(
             modifier = Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(
-                modifier = Modifier.height(
-                    TurnAppTheme.dimens.paddingSemiSmall
-                )
-            )
-
             Text(
                 text = "لیست افراد",
                 style = TurnAppTheme.typography.title.medium,

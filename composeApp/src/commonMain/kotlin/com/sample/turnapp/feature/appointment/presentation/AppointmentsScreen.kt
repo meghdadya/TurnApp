@@ -1,6 +1,7 @@
 package com.sample.turnapp.feature.appointment.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,9 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Refresh
@@ -28,6 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -40,8 +47,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.sample.turnapp.core.ui.theme.TurnAppTheme
@@ -277,7 +288,7 @@ private fun AppointmentList(
     onRestore: (AppointmentUiModel) -> Unit
 ) {
 
-    LazyColumn {
+    LazyColumn(Modifier.padding(horizontal = TurnAppTheme.dimens.paddingSmall)) {
 
         items(items) { item ->
 
@@ -301,47 +312,148 @@ private fun AppointmentItem(
     onRestore: (AppointmentUiModel) -> Unit
 ) {
 
+    val backgroundColor = if (item.deleted) {
+        TurnAppTheme.colors.backgroundRedContainer
+    } else {
+        TurnAppTheme.colors.backgroundPrimary
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
-            .background(
-                if (item.deleted)
-                    TurnAppTheme.colors.backgroundRedContainer
-                else
-                    TurnAppTheme.colors.backgroundPrimary
+            .background(backgroundColor)
+            .padding(
+                horizontal = TurnAppTheme.dimens.paddingSemiSmall,
+                vertical = TurnAppTheme.dimens.paddingSemiSmall
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Content
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
 
-        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.title,
+                style = TurnAppTheme.typography.body1.medium,
+                color = TurnAppTheme.colors.textPrimary,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
 
-            Text(item.title, fontWeight = FontWeight.Bold)
+            Spacer(
+                modifier = Modifier.height(
+                    TurnAppTheme.dimens.paddingXSmall
+                )
+            )
 
-            Text(item.personName, style = TurnAppTheme.typography.body1.light)
+            Text(
+                text = item.personName,
+                style = TurnAppTheme.typography.body1.light,
+                color = TurnAppTheme.colors.textSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
 
-            Text("${item.startTimePersian} → ${item.endTimePersian}")
+            Spacer(
+                modifier = Modifier.height(
+                    TurnAppTheme.dimens.paddingXSmall
+                )
+            )
+
+            Text(
+                text = "${item.startTimePersian} → ${item.endTimePersian}",
+                style = TurnAppTheme.typography.body1.light,
+                color = TurnAppTheme.colors.textSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
+
+        Spacer(
+            modifier = Modifier.width(
+                TurnAppTheme.dimens.paddingSemiSmall
+            )
+        )
 
         if (item.deleted) {
 
-            IconButton(onClick = { onRestore(item) }) {
-                Icon(Icons.Rounded.Refresh, contentDescription = null)
-            }
+            ActionButton(
+                backgroundColor = TurnAppTheme.colors.backgroundGreenContainer,
+                iconTint = TurnAppTheme.colors.textGreen,
+                icon = Icons.Rounded.Refresh,
+                onClick = {
+                    onRestore(item)
+                }
+            )
 
         } else {
 
-            IconButton(onClick = { onEdit(item) }) {
-                Icon(Icons.Rounded.Edit, contentDescription = null)
-            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
 
-            IconButton(onClick = { onDelete(item) }) {
-                Icon(Icons.Rounded.Delete, contentDescription = null)
+                ActionButton(
+                    backgroundColor = TurnAppTheme.colors.backgroundOnElevatedItems,
+                    iconTint = TurnAppTheme.colors.textPrimary,
+                    icon = Icons.Rounded.Edit,
+                    onClick = {
+                        onEdit(item)
+                    }
+                )
+
+                ActionButton(
+                    backgroundColor = TurnAppTheme.colors.backgroundOnElevatedItems,
+                    iconTint = TurnAppTheme.colors.textRed,
+                    icon = Icons.Rounded.Delete,
+                    onClick = {
+                        onDelete(item)
+                    }
+                )
             }
         }
     }
 }
 
+@Composable
+private fun ActionButton(
+    backgroundColor: Color,
+    iconTint: Color,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+
+    Box(
+        modifier = Modifier
+            .size(36.dp)
+            .clip(
+                RoundedCornerShape(
+                    TurnAppTheme.dimens.buttonRadiusMedium
+                )
+            )
+            .background(backgroundColor)
+            .border(
+                width = TurnAppTheme.dimens.border,
+                color = TurnAppTheme.colors.separatorPrimary,
+                shape = RoundedCornerShape(
+                    TurnAppTheme.dimens.buttonRadiusMedium
+                )
+            )
+            .clickable {
+                onClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = iconTint,
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
 @Composable
 private fun HeaderSection() {
     Box(
@@ -380,8 +492,28 @@ private fun SearchSection(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = TurnAppTheme.dimens.paddingMedium),
+        shape = RoundedCornerShape(
+            TurnAppTheme.dimens.buttonRadiusLarge
+        ),
         placeholder = { Text("جستجو بر اساس عنوان یا شخص") },
-        singleLine = true
+        singleLine = true,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = TurnAppTheme.colors.textSecondary
+            )
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = TurnAppTheme.colors.backgroundElevatedItems,
+            unfocusedContainerColor = TurnAppTheme.colors.backgroundElevatedItems,
+            disabledContainerColor = TurnAppTheme.colors.backgroundElevatedItems,
+            focusedBorderColor = TurnAppTheme.colors.active,
+            unfocusedBorderColor = TurnAppTheme.colors.separatorPrimary,
+            cursorColor = TurnAppTheme.colors.active,
+            focusedTextColor = TurnAppTheme.colors.textPrimary,
+            unfocusedTextColor = TurnAppTheme.colors.textPrimary
+        )
     )
 }
 
@@ -398,18 +530,31 @@ private fun TopSection(
     ) {
 
         Surface(
-            modifier = Modifier.clickable { onAddClick() },
-            color = TurnAppTheme.colors.primaryAction
+            modifier = Modifier.clickable{
+                onAddClick()
+            },
+            color = TurnAppTheme.colors.primaryAction,
+            shape = RoundedCornerShape(
+                TurnAppTheme.dimens.buttonRadiusMedium
+            )
         ) {
+
             Text(
                 text = "افزودن",
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier.padding(
+                    horizontal = TurnAppTheme.dimens.paddingMedium,
+                    vertical = TurnAppTheme.dimens.paddingSmall
+                ),
+                color = TurnAppTheme.colors.white,
+                style = TurnAppTheme.typography.body1.medium,
                 fontWeight = FontWeight.Bold
             )
         }
 
         Text(
             text = "قرارها ($count)",
+            style = TurnAppTheme.typography.body1.medium,
+            color = TurnAppTheme.colors.textPrimary,
             fontWeight = FontWeight.SemiBold
         )
     }
