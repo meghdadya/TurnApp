@@ -15,7 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -161,7 +164,7 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f),
                         title = "لیست نوبت‌ها",
                         subtitle = "${state.appointments} نوبت",
-                        icon = Icons.Default.Star,
+                        icon = Icons.Default.CalendarToday,
                         iconBackground = colors.backgroundYellowContainer,
                         iconTint = colors.textYellow,
                         onClick = {
@@ -173,7 +176,7 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f),
                         title = "لیست افراد",
                         subtitle = "${state.peopleCount} نفر",
-                        icon = Icons.Default.Star,
+                        icon = Icons.Default.People,
                         iconBackground = colors.backgroundBlueContainer,
                         iconTint = colors.textBlue,
                         onClick = {
@@ -196,7 +199,7 @@ fun HomeScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
 
                         Icon(
-                            imageVector = Icons.Default.Star,
+                            imageVector = Icons.Default.Dashboard,
                             contentDescription = null,
                             tint = colors.textPrimary
                         )
