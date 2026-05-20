@@ -18,6 +18,8 @@ import com.sample.turnapp.feature.appointment.domain.usecase.RestoreAppointments
 import com.sample.turnapp.feature.appointment.domain.usecase.SaveAppointmentUseCase
 import com.sample.turnapp.feature.appointment.presentation.AppointmentsViewModel
 import com.sample.turnapp.feature.appointment.domain.AppointmentsRepository
+import com.sample.turnapp.feature.home.domain.GetHomeStatsUseCase
+import com.sample.turnapp.feature.home.presentation.HomeViewModel
 import com.sample.turnapp.feature.people.domain.PeopleRepository
 import com.sample.turnapp.feature.people.domain.usecase.DeletePeopleUseCase
 import com.sample.turnapp.feature.people.domain.usecase.GetPeopleListUseCase
@@ -65,13 +67,17 @@ val useCaseModule = module {
     factory { GetAppointmentsUseCase(get()) }
     factory { RestoreAppointmentsUseCase(get()) }
     factory { SaveAppointmentUseCase(get()) }
+    factory { GetHomeStatsUseCase(get(), get()) }
 }
 
 val viewmodelModule = module {
-    viewModel{
-        PeopleViewModel(get(),get(),get(),get(),get())
+    viewModel {
+        PeopleViewModel(get(), get(), get(), get(), get())
     }
-    viewModel{
-        AppointmentsViewModel(get(),get(),get(),get(),get(),get())
+    viewModel {
+        AppointmentsViewModel(get(), get(), get(), get(), get(), get())
+    }
+    viewModel {
+        HomeViewModel(get(), get())
     }
 }
