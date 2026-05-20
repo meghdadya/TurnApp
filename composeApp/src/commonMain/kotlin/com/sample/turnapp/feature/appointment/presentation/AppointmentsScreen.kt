@@ -319,7 +319,7 @@ private fun AppointmentItem(
 
             Text(item.personName, style = TurnAppTheme.typography.body1.light)
 
-            Text("${item.startTime} → ${item.endTime}")
+            Text("${item.startTimePersian} → ${item.endTimePersian}")
         }
 
         if (item.deleted) {

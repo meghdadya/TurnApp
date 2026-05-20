@@ -16,8 +16,8 @@ interface AppointmentsContract {
         data class OnSaveAppointment(
             val id: Int? = null,
             val personId: Int,
-            val startTime: Double,
-            val endTime: Double,
+            val startTime: Long,
+            val endTime: Long,
             val title: String,
             val description: String? = null
         ) : AppointmentsUiEvent

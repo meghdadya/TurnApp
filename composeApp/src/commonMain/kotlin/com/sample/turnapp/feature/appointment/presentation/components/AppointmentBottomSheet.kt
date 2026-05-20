@@ -52,8 +52,8 @@ fun AppointmentBottomSheet(
     onSave: (
         id: Int?,
         personId: Int,
-        startTime: Double,
-        endTime: Double,
+        startTime: Long,
+        endTime: Long,
         title: String,
         description: String
     ) -> Unit
@@ -229,27 +229,21 @@ fun AppointmentBottomSheet(
                     Button(
                         modifier = Modifier.weight(1f),
                         onClick = {
+                            val startTime: Long =
+                                startDateState.selectedDate?.toEpochMilliseconds()?.div(1000) ?: 0L
 
-                            startTime =
-                                startDateState.selectedDate
-                                    ?.toEpochMilliseconds()
-                                    ?.toDouble()
-                                    ?: 0.0
-
-                            endTime =
-                                endDateState.selectedDate
-                                    ?.toEpochMilliseconds()
-                                    ?.toDouble()
-                                    ?: 0.0
+                            val endTime: Long =
+                                endDateState.selectedDate?.toEpochMilliseconds()?.div(1000) ?: 0L
 
                             onSave(
                                 appointment?.id,
                                 personId.toIntOrNull() ?: 0,
-                                startTime.toString().toDouble(),
-                                endTime.toString().toDouble(),
+                                startTime,
+                                endTime,
                                 title,
                                 description
                             )
+
                         }
                     ) {
 

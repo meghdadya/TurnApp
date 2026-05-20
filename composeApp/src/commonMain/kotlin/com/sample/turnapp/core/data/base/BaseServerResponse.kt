@@ -16,6 +16,6 @@ data class BaseServerResponse<T>(
     val message: String? = null,
 
     @SerialName("success")
-    val success: Boolean? = null, // present in some responses
+    val success: Boolean? = null,
 )
 
