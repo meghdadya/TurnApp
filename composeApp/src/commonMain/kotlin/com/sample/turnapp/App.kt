@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sample.turnapp.core.ui.theme.TurnAppTheme
 import com.sample.turnapp.feature.home.presentation.HomeScreen
+import com.sample.turnapp.feature.people.presentation.PeopleScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.KoinContext
 
@@ -30,15 +31,22 @@ import org.koin.compose.KoinContext
 
 // ---------------------- APP ROOT ----------------------
 
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+
 @Composable
 fun App() {
-    TurnAppTheme {
-        KoinContext {
-            AppScaffold()
+    CompositionLocalProvider(
+        LocalLayoutDirection provides LayoutDirection.Rtl
+    ) {
+        TurnAppTheme {
+            KoinContext {
+                AppScaffold()
+            }
         }
     }
 }
-
 // ---------------------- NAV GRAPH ----------------------
 
 @Composable
@@ -63,7 +71,7 @@ fun AppScaffold() {
             }
 
             composable<People> {
-                Text("People")
+                PeopleScreen()
             }
 
             composable<Appointment> {

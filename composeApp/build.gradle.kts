@@ -45,6 +45,7 @@ kotlin {
             //koin
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+            implementation("org.slf4j:slf4j-simple:2.0.18")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -75,6 +76,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             //navigation
             implementation(libs.androidx.navigation.compose)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
